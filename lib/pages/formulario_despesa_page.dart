@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:minha_grana/main.dart';
 import 'package:minha_grana/models/despesa.dart';
+
+import '../database/dao/despesa_dao_impl.dart';
 
 class FormularioDespesa extends StatelessWidget {
   const FormularioDespesa({super.key});
@@ -55,12 +58,16 @@ class FormularioDespesa extends StatelessWidget {
             ),
           ),
           ElevatedButton(
-            onPressed: () {
-              Despesa novoDespesa = Despesa(
+            onPressed: () async {
+              Despesa novaDespesa = Despesa(
                 categoria: controllerCategoria.text,
                 valor: double.parse(controllerValor.text),
                 descricao: controllerDescricao.text,
-                
+              );
+              await _salvarDespesa(novaDespesa);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const MyApp()),
               );
             },
             child: const Text('Salvar'),
@@ -69,4 +76,10 @@ class FormularioDespesa extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<int> _salvarDespesa(Despesa novaDespesa) async {
+  DespesaDAOImpl despesaDAO = DespesaDAOImpl();
+  int id = await despesaDAO.save(novaDespesa);
+  return id;
 }

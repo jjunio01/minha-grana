@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../database/dao/despesa_dao_impl.dart';
+import '../main.dart';
 
 class DespesaPage extends StatefulWidget {
   const DespesaPage({super.key});
@@ -30,9 +31,35 @@ class _DespesaPageState extends State<DespesaPage> {
           }
           return ListView.builder(
             itemCount: snapshot.data.length,
-            scrollDirection: Axis.horizontal,
             itemBuilder: (BuildContext context, int index) {
-              return Text('${snapshot.data[index].title}');
+              return ListTile(
+                leading: const Icon(Icons.savings),
+                title: Text(snapshot.data[index].categoria),
+                subtitle: Text(snapshot.data[index].valor.toString()),
+                trailing: Container(
+                  width: 100,
+                  child: Row(
+                    children: <Widget>[
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.edit, color: Colors.amberAccent),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _deletarDespesa(snapshot.data[index].id);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const MyApp()),
+                          );
+                        },
+                        icon: const Icon(Icons.delete_forever_outlined,
+                            color: Colors.red),
+                      ),
+                    ],
+                  ),
+                ),
+              );
             },
           );
         }
@@ -44,4 +71,9 @@ class _DespesaPageState extends State<DespesaPage> {
 _listaDespesas() async {
   DespesaDAOImpl despesaDAO = DespesaDAOImpl();
   return despesaDAO.findAll();
+}
+
+_deletarDespesa(int id) async {
+  DespesaDAOImpl despesaDAO = DespesaDAOImpl();
+  return despesaDAO.remove(id);
 }

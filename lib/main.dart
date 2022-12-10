@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   static const List<Widget> _pages = <Widget>[
     FormularioDespesa(),
     DespesaPage(),

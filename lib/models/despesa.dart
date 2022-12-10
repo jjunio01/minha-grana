@@ -29,7 +29,7 @@ class Despesa {
 
   static Despesa fromMap(Map<String, dynamic> novaDespesa) {
     return Despesa(
-      novaDespesa['id'],
+      id: novaDespesa['id'],
       categoria: novaDespesa['categoria'],
       valor: novaDespesa['valor'],
       descricao: novaDespesa['descricao'],
