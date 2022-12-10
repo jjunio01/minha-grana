@@ -6,6 +6,8 @@ import '../database_provider.dart';
 import '../scripts.dart';
 
 class DespesaDAOImpl implements DespesaDAO {
+  DespesaDAOImpl();
+
   @override
   Future<List<Despesa>> findAll() async {
     Database db = await DBProvider.conexao;
