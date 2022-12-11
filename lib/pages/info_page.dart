@@ -7,12 +7,25 @@ class InfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text(
-        'APP para gerenciamento de gastos',
-        style: TextStyle(
-          fontSize: 20,
-        ),
+    return Center(
+      child: Column(
+
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const[
+          Text(
+            'APP para gerenciamento de gastos',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+          SizedBox(height: 15,),
+          Text(
+            'Desenvolvedor: JJunio',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          ),
+        ],
       ),
     );
   }

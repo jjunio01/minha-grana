@@ -5,4 +5,5 @@ abstract class DespesaDAO {
   Future<void> remove(int id);
   Future<void> update(Despesa despesa);
   Future<List<Despesa>> findAll();
+  Future<Despesa?> findById(int id);
 }

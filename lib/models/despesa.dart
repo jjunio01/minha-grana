@@ -1,5 +1,5 @@
 class Despesa {
-  final String categoria;
+  String categoria;
   final double valor;
   final String descricao;
   final int? id;

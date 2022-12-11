@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../database/dao/despesa_dao_impl.dart';
 import '../main.dart';
+import '../models/despesa.dart';
+import 'formulario.dart';
 
 class DespesaPage extends StatefulWidget {
   const DespesaPage({super.key});
@@ -11,6 +13,10 @@ class DespesaPage extends StatefulWidget {
 }
 
 class _DespesaPageState extends State<DespesaPage> {
+  TextEditingController controllerCategoria = TextEditingController();
+  TextEditingController controllerValor = TextEditingController();
+  TextEditingController controllerDescricao = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -36,12 +42,65 @@ class _DespesaPageState extends State<DespesaPage> {
                 leading: const Icon(Icons.savings),
                 title: Text(snapshot.data[index].categoria),
                 subtitle: Text(snapshot.data[index].valor.toString()),
-                trailing: Container(
+                trailing: SizedBox(
                   width: 100,
                   child: Row(
                     children: <Widget>[
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          controllerCategoria.text =
+                              snapshot.data[index].categoria;
+                          controllerValor.text = snapshot.data[index].valor.toString();
+                          controllerDescricao.text =
+                              snapshot.data[index].descricao;
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: Form(
+                                    child: Column(
+                                  children: [
+                                    Formulario().build(
+                                        context: context,
+                                        controller: controllerCategoria,
+                                        hintText: 'Categoria',
+                                        teclado: TextInputType.text),
+                                    Formulario().build(
+                                        context: context,
+                                        controller: controllerValor,
+                                        hintText: 'Valor',
+                                        teclado: TextInputType.number),
+                                    Formulario().build(
+                                        context: context,
+                                        controller: controllerDescricao,
+                                        hintText: 'Descrição',
+                                        teclado: TextInputType.text),
+                                    ElevatedButton(
+                                      onPressed: () async {
+                                        Despesa novaDespesa = Despesa(
+                                          id: snapshot.data[index].id,
+                                            categoria: controllerCategoria.text,
+                                            descricao: controllerDescricao.text,
+                                            valor: double.parse(controllerValor
+                                                .text
+                                                .toString()));
+                                                
+                                        _atualizarDespesa(novaDespesa);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const MyApp()),
+                                        );
+                                      },
+                                      child: const Text('Atualizar'),
+                                    )
+                                  ],
+                                )),
+                              );
+                            },
+                          );
+                        },
                         icon: const Icon(Icons.edit, color: Colors.amberAccent),
                       ),
                       IconButton(
@@ -59,6 +118,25 @@ class _DespesaPageState extends State<DespesaPage> {
                     ],
                   ),
                 ),
+                onTap: () {
+                  String descricao = snapshot.data[index].descricao;
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        content: Text('$descricao.'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('OK'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               );
             },
           );
@@ -76,4 +154,9 @@ _listaDespesas() async {
 _deletarDespesa(int id) async {
   DespesaDAOImpl despesaDAO = DespesaDAOImpl();
   return despesaDAO.remove(id);
+}
+
+Future<void> _atualizarDespesa(Despesa novaDespesa) async {
+  DespesaDAOImpl despesaDAO = DespesaDAOImpl();
+  await despesaDAO.update(novaDespesa);
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minha_grana/pages/formulario_despesa_page.dart';
+import 'package:minha_grana/pages/cadastrar_despesa_page.dart';
 import 'package:minha_grana/pages/info_page.dart';
 
 import 'pages/despesa_page.dart';
@@ -25,9 +25,10 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, this.id});
 
   final String title;
+  final int? id;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -35,12 +36,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 1;
-  static const List<Widget> _pages = <Widget>[
-    FormularioDespesa(),
+
+  final _pages = const [
+    CadastraDespesa(),
     DespesaPage(),
     GerenciaDespesas(),
     InfoPage()
   ];
+
   final _bottomNavigatorBarItens = <BottomNavigationBarItem>[
     const BottomNavigationBarItem(
       icon: Icon(Icons.monetization_on_outlined),
@@ -55,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
       label: 'Gerenciar',
     ),
     const BottomNavigationBarItem(
-      icon: Icon(Icons.info_outlined),
+      icon: Icon(Icons.copyright),
       label: 'Informações',
     ),
   ];
@@ -73,7 +76,10 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: _pages.elementAt(_selectedIndex),
+        child: IndexedStack(
+          index: _selectedIndex,
+          children: _pages,
+        ),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: _bottomNavigatorBarItens,

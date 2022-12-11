@@ -45,4 +45,18 @@ class DespesaDAOImpl implements DespesaDAO {
       whereArgs: [despesa.id],
     );
   }
+
+  @override
+  Future<Despesa?> findById(int id) async {
+    Database db = await DBProvider.conexao;
+    List<Map<String, Object?>> despesasBd = await db.query(tabelaDespesa,
+     where: 'id = ?',
+     whereArgs: [id]);
+    for (var despesa in despesasBd) {
+      if (despesa['id'] == id) {
+        return Despesa.fromMap(despesa);
+      }
+    } 
+    return null;
+  }
 }
