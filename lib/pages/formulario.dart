@@ -11,6 +11,7 @@ class Formulario {
     return TextFormField(
       controller: controller,
       keyboardType: teclado,
+      onFieldSubmitted: (value) {},
       maxLines: linhas,
       decoration: InputDecoration(
           border: OutlineInputBorder(
@@ -19,8 +20,8 @@ class Formulario {
                   color: Colors.black12, style: BorderStyle.solid)),
           hintText: hintText),
       style: const TextStyle(fontSize: 20.0),
-      validator: (String? value) {
-        return (value != null) ? textoErro : null;
+      validator: (value) {
+        return (value == null || value.isEmpty) ? textoErro : null;
       },
     );
   }

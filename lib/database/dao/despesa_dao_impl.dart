@@ -1,3 +1,4 @@
+import 'package:minha_grana/models/chart_data.dart';
 import 'package:minha_grana/models/despesa.dart';
 import 'package:minha_grana/models/despesa_dao.dart';
 import 'package:sqflite/sqflite.dart';
@@ -49,14 +50,31 @@ class DespesaDAOImpl implements DespesaDAO {
   @override
   Future<Despesa?> findById(int id) async {
     Database db = await DBProvider.conexao;
-    List<Map<String, Object?>> despesasBd = await db.query(tabelaDespesa,
-     where: 'id = ?',
-     whereArgs: [id]);
+    List<Map<String, Object?>> despesasBd =
+        await db.query(tabelaDespesa, where: 'id = ?', whereArgs: [id]);
     for (var despesa in despesasBd) {
       if (despesa['id'] == id) {
         return Despesa.fromMap(despesa);
       }
-    } 
+    }
     return null;
+  }
+
+  Future<List<ChartData>> findDespesa() async {
+    Database db = await DBProvider.conexao;
+    List<ChartData> infoGrafico = [];
+    List<Map<String, Object?>> despesasBd = await db.query(
+      tabelaDespesa,
+      columns: ['categoria', 'valor'],
+    );
+    for (var gasto in despesasBd) {
+      infoGrafico.add(
+        ChartData(
+          gasto['categoria'].toString(),
+          double.parse(gasto['valor'].toString()),
+        ),
+      );
+    }
+    return infoGrafico;
   }
 }

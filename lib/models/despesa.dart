@@ -1,14 +1,14 @@
 class Despesa {
   String categoria;
   final double valor;
-  final String descricao;
+  String? descricao;
   final int? id;
 
   Despesa({
     this.id,
     required this.categoria,
     required this.valor,
-    required this.descricao,
+    this.descricao,
   });
 
   Map<String, Object?> toMap() {

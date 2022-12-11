@@ -13,6 +13,7 @@ class DespesaPage extends StatefulWidget {
 }
 
 class _DespesaPageState extends State<DespesaPage> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController controllerCategoria = TextEditingController();
   TextEditingController controllerValor = TextEditingController();
   TextEditingController controllerDescricao = TextEditingController();
@@ -50,53 +51,71 @@ class _DespesaPageState extends State<DespesaPage> {
                         onPressed: () {
                           controllerCategoria.text =
                               snapshot.data[index].categoria;
-                          controllerValor.text = snapshot.data[index].valor.toString();
+                          controllerValor.text =
+                              snapshot.data[index].valor.toString();
                           controllerDescricao.text =
-                              snapshot.data[index].descricao;
+                              snapshot.data[index].descricao ?? '';
                           showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 content: Form(
-                                    child: Column(
-                                  children: [
-                                    Formulario().build(
-                                        context: context,
-                                        controller: controllerCategoria,
-                                        hintText: 'Categoria',
-                                        teclado: TextInputType.text),
-                                    Formulario().build(
-                                        context: context,
-                                        controller: controllerValor,
-                                        hintText: 'Valor',
-                                        teclado: TextInputType.number),
-                                    Formulario().build(
-                                        context: context,
-                                        controller: controllerDescricao,
-                                        hintText: 'Descrição',
-                                        teclado: TextInputType.text),
-                                    ElevatedButton(
-                                      onPressed: () async {
-                                        Despesa novaDespesa = Despesa(
-                                          id: snapshot.data[index].id,
-                                            categoria: controllerCategoria.text,
-                                            descricao: controllerDescricao.text,
-                                            valor: double.parse(controllerValor
-                                                .text
-                                                .toString()));
-                                                
-                                        _atualizarDespesa(novaDespesa);
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const MyApp()),
-                                        );
-                                      },
-                                      child: const Text('Atualizar'),
-                                    )
-                                  ],
-                                )),
+                                    key: _formKey,
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        children: [
+                                          Formulario().build(
+                                              textoErro:
+                                                  'Informação obrigatória',
+                                              context: context,
+                                              controller: controllerCategoria,
+                                              hintText: 'Categoria',
+                                              teclado: TextInputType.text),
+                                          Formulario().build(
+                                              textoErro:
+                                                  'Informação obrigatória',
+                                              context: context,
+                                              controller: controllerValor,
+                                              hintText: 'Valor',
+                                              teclado: TextInputType.number),
+                                          Formulario().build(
+                                              context: context,
+                                              controller: controllerDescricao,
+                                              hintText: 'Descrição',
+                                              teclado: TextInputType.text),
+                                          ElevatedButton(
+                                            onPressed: () async {
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                Despesa novaDespesa = Despesa(
+                                                    id: snapshot.data[index].id,
+                                                    categoria:
+                                                        controllerCategoria
+                                                            .text,
+                                                    valor: double.parse(
+                                                        controllerValor.text
+                                                            .toString()));
+                                                if (controllerDescricao.text !=
+                                                        null &&
+                                                    controllerDescricao.text !=
+                                                        '') {
+                                                  novaDespesa.descricao =
+                                                      controllerDescricao.text;
+                                                }
+                                                _atualizarDespesa(novaDespesa);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const MyApp()),
+                                                );
+                                              }
+                                            },
+                                            child: const Text('Atualizar'),
+                                          )
+                                        ],
+                                      ),
+                                    )),
                               );
                             },
                           );
@@ -119,12 +138,13 @@ class _DespesaPageState extends State<DespesaPage> {
                   ),
                 ),
                 onTap: () {
-                  String descricao = snapshot.data[index].descricao;
+                  String descricao = snapshot.data[index].descricao ??
+                      'Categoria sem descrição cadastrada';
                   showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        content: Text('$descricao.'),
+                        content: Text('Descrição: $descricao'),
                         actions: <Widget>[
                           TextButton(
                             child: const Text('OK'),

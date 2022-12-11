@@ -25,10 +25,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, this.id});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
-  final int? id;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
